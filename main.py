@@ -82,7 +82,9 @@ def wheel(pos):
 
 def draw_rainbow(np):
     n = np.n
-    colour_array = [wheel(int(x)) for x in 255 / (n * 1.1)]
+    colour_array = []
+    for i in range(n):
+        colour_array.append(wheel(int(i * 255 / (n * 1.1))))
     for i in range(n):
         np[i] = colour_array[i]
     np.write()
@@ -91,12 +93,14 @@ def draw_rainbow(np):
     for i in range(4 * n):
         for j in range(n):
             np[j] = colour_array[j]
+        chop = random.randint(1,3)
         np[random.randint(0, n - 1)] = tuple(
-            [c // random.randint(1, 5) for c in colour_array[i % n]]
+            [c // chop for c in colour_array[i % n]]
         )
         np.write()
-        time.sleep_ms(30)
+        time.sleep_ms(random.randint(60,120))
+    for j in range(n):
+        np[j] = colour_array[j]
+    np.write()
 
-
-# for i in range(66):
-#     print(wheel(int(i * 255 / 75)))
+draw_rainbow(np)
