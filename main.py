@@ -1,9 +1,12 @@
 import neopixel
 import machine
 import time
+import random
+
 np = neopixel.NeoPixel(machine.Pin(16), 66)
-np[0] = (255,0,0)
+np[0] = (255, 0, 0)
 np.write()
+
 
 def demo(np):
     n = np.n
@@ -31,9 +34,9 @@ def demo(np):
     for i in range(0, 4 * 256, 8):
         for j in range(n):
             if (i // 256) % 2 == 0:
-                val = i & 0xff
+                val = i & 0xFF
             else:
-                val = 255 - (i & 0xff)
+                val = 255 - (i & 0xFF)
             np[j] = (val, 0, 0)
         np.write()
 
@@ -53,9 +56,6 @@ def sunrise(np):
         np.fill((i, 255, i))
         np.write()
         time.sleep_ms(30)
-
-def flicker(pixel):
-
 
 
 def wheel(pos):
@@ -82,7 +82,7 @@ def wheel(pos):
 
 def draw_rainbow(np):
     n = np.n
-    colour_array = [wheel(int(x)) for x in 255 / (n*1.1)]
+    colour_array = [wheel(int(x)) for x in 255 / (n * 1.1)]
     for i in range(n):
         np[i] = colour_array[i]
     np.write()
@@ -91,15 +91,12 @@ def draw_rainbow(np):
     for i in range(4 * n):
         for j in range(n):
             np[j] = colour_array[j]
-        if (i // n) % 2 == 0:
-            np[i % n] = (0, 0, 0)
-        else:
-            np[n - 1 - (i % n)] = (0, 0, 0)
+        np[random.randint(0, n - 1)] = tuple(
+            [c // random.randint(1, 5) for c in colour_array[i % n]]
+        )
         np.write()
         time.sleep_ms(30)
 
 
 # for i in range(66):
 #     print(wheel(int(i * 255 / 75)))
-
-
