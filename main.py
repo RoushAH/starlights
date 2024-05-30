@@ -2,6 +2,7 @@ import neopixel
 import machine
 import time
 import random
+from collections import deque
 
 np = neopixel.NeoPixel(machine.Pin(16), 66)
 np[0] = (255, 0, 0)
@@ -46,7 +47,19 @@ def demo(np):
     np.write()
 
 
-def sunrise(np):
+def sunrise(n):
+    for r in range(255):
+        out_array = [(0, r, 0) for _ in range(n)]
+        yield out_array, 30
+    for gb in range(210):
+        out_array = [(gb, 255, gb) for _ in range(n)]
+        yield out_array, 30
+    out_array = [(210, 255, 210) for _ in range(n)]
+    while True:
+        yield out_array, 100
+
+
+def sunrise_old(np):
     n = np.n
     for i in range(255):
         np.fill((0, i, 0))
@@ -60,7 +73,7 @@ def sunrise(np):
 
 def twinkle_dim(colour):
     g, r, b = colour
-    drop = random.randint(55, 75) / 100
+    drop = random.randint(65, 85) / 100
     return int(g * drop), int(r * drop), int(b * drop)
 
 
@@ -86,7 +99,21 @@ def wheel(pos):
     return (g, r, b)
 
 
-def draw_rainbow(np):
+def twinkle_rainbow(n):
+    colour_array = []
+    for i in range(n):
+        colour_array.append(wheel(int(i * 255 / (n * 1.1))))
+    yield colour_array, random.randint(60, 120)
+    old_pix = 0
+    while True:
+        rand_pix = random.randint(0, n - 1)
+        colour_array[rand_pix] = twinkle_dim(colour_array[rand_pix])
+        colour_array[old_pix] = wheel(int(old_pix * 255 / (n * 1.1)))
+        yield colour_array, random.randint(60, 120)
+        old_pix = rand_pix
+
+
+def draw_rainbow_old(np):
     n = np.n
     colour_array = []
     for i in range(n):
@@ -99,7 +126,6 @@ def draw_rainbow(np):
     for i in range(4 * n):
         for j in range(n):
             np[j] = colour_array[j]
-        chop = random.randint(1, 3)
         rand_pixel = random.randint(0, n - 1)
         np[rand_pixel] = twinkle_dim(colour_array[rand_pixel])
         np.write()
@@ -109,10 +135,16 @@ def draw_rainbow(np):
     np.write()
 
 
-# draw_rainbow(np)
+def roll_rainbow(n):
+    colour_deque = deque()
+    for i in range(n):
+        colour_deque.append(wheel(int(i * 255 / n)))
+    while True:
+        yield list(colour_deque), 40
+        colour_deque.rotate()
 
 
-def roll_rainbow(np):
+def roll_rainbow_old(np):
     n = np.n
     stime = 30
     colour_array = []
@@ -129,8 +161,6 @@ def roll_rainbow(np):
         time.sleep_ms(stime)
 
 
-# roll_rainbow(np)
-
 def random_fill(np, colour):
     n = np.n
     colour_array = []
@@ -145,6 +175,7 @@ def random_fill(np, colour):
         np[i] = colour_array[i]
     np.write()
 
+
 def randjust(colour):
     colour += random.randint(-20, 20)
     if colour < 0:
@@ -153,7 +184,27 @@ def randjust(colour):
         return 255
     return colour
 
-def living_random(np, colour):
+
+def living_random(n, colour):
+    colour_array = []
+    for i in range(n):
+        g, r, b = colour
+        g = randjust(g)
+        r = randjust(r)
+        b = randjust(b)
+        colour_array.append((g, r, b))
+    yield colour_array, 30
+    while True:
+        g, r, b = colour
+        g = randjust(g)
+        r = randjust(r)
+        b = randjust(b)
+        rand_pix = random.randint(0, n - 1)
+        colour_array[rand_pix] = (g, r, b)
+        yield colour_array, 30
+
+
+def living_random_old(np, colour):
     n = np.n
     colour_array = []
     for i in range(n):
@@ -176,4 +227,20 @@ def living_random(np, colour):
         np.write()
         time.sleep_ms(30)
 
-living_random(np, (25, 128, 25))
+
+# living_random(np, (25, 128, 25))
+def pix_write(array, neopixels):
+    n = neopixels.n
+    for i in range(n):
+        neopixels[i] = array[i]
+    neopixels.write()
+
+
+show = sunrise(np.n)
+show = twinkle_rainbow(np.n)
+
+# Master Loop
+while True:
+    arr, ms = next(show)
+    pix_write(arr, np)
+    time.sleep_ms(ms)
