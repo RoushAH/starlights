@@ -58,6 +58,12 @@ def sunrise(np):
         time.sleep_ms(30)
 
 
+def twinkle_dim(colour):
+    g, r, b = colour
+    drop = random.randint(55, 75) / 100
+    return int(g * drop), int(r * drop), int(b * drop)
+
+
 def wheel(pos):
     # Input a value 0 to 255 to get a color value.
     # The colours are a transition r - g - b - back to r.
@@ -93,14 +99,81 @@ def draw_rainbow(np):
     for i in range(4 * n):
         for j in range(n):
             np[j] = colour_array[j]
-        chop = random.randint(1,3)
-        np[random.randint(0, n - 1)] = tuple(
-            [c // chop for c in colour_array[i % n]]
-        )
+        chop = random.randint(1, 3)
+        rand_pixel = random.randint(0, n - 1)
+        np[rand_pixel] = twinkle_dim(colour_array[rand_pixel])
         np.write()
-        time.sleep_ms(random.randint(60,120))
+        time.sleep_ms(random.randint(60, 120))
     for j in range(n):
         np[j] = colour_array[j]
     np.write()
 
-draw_rainbow(np)
+
+# draw_rainbow(np)
+
+
+def roll_rainbow(np):
+    n = np.n
+    stime = 30
+    colour_array = []
+    for i in range(n):
+        colour_array.append(wheel(int(i * 255 / n)))
+    for i in range(n):
+        np[i] = colour_array[i]
+    np.write()
+    time.sleep_ms(stime)
+    for j in range(n * 5):
+        for i in range(n):
+            np[i] = colour_array[(i + j) % n]
+        np.write()
+        time.sleep_ms(stime)
+
+
+# roll_rainbow(np)
+
+def random_fill(np, colour):
+    n = np.n
+    colour_array = []
+    for i in range(n):
+        g, r, b = colour
+        g += random.randint(-20, 20)
+        r += random.randint(-20, 20)
+        b += random.randint(-20, 20)
+        colour_array.append((g, r, b))
+    print(colour_array)
+    for i in range(n):
+        np[i] = colour_array[i]
+    np.write()
+
+def randjust(colour):
+    colour += random.randint(-20, 20)
+    if colour < 0:
+        return 0
+    elif colour > 255:
+        return 255
+    return colour
+
+def living_random(np, colour):
+    n = np.n
+    colour_array = []
+    for i in range(n):
+        g, r, b = colour
+        g = randjust(g)
+        r = randjust(r)
+        b = randjust(b)
+        colour_array.append((g, r, b))
+    print(colour_array)
+    for i in range(n):
+        np[i] = colour_array[i]
+    np.write()
+    for i in range(n * 10):
+        g, r, b = colour
+        g = randjust(g)
+        r = randjust(r)
+        b = randjust(b)
+        rand_pixel = random.randint(0, n - 1)
+        np[rand_pixel] = (g, r, b)
+        np.write()
+        time.sleep_ms(30)
+
+living_random(np, (25, 128, 25))
