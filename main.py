@@ -15,6 +15,7 @@ def pix_write(array, neopixels):
 
 if __name__ == "__main__":
     np = neopixel.NeoPixel(machine.Pin(16), 66)
+    button_queue = []
     shows = []
     this_show = visuals.sunrise(np.n)
     shows.append(this_show)
@@ -22,8 +23,14 @@ if __name__ == "__main__":
     shows.append(this_show)
     this_show = visuals.living_random(np.n, (20, 127, 15))
     shows.append(this_show)
+    button_queue.append(this_show)
     this_show = visuals.roll_rainbow(np.n)
     shows.append(this_show)
+    this_show = visuals.off(np.n)
+    shows.append(this_show)
+    button_queue.append(this_show)
+    this_show = visuals.living_random(np.n, (220, 227, 215))
+    button_queue.append(this_show)
 
     last = time.ticks_ms()
 
