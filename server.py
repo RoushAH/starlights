@@ -4,13 +4,16 @@ import time
 from machine import Pin
 import uasyncio
 
-ssid = 'BT-89CP3S'
-password = '7mdJXHmCRyAQ3J'
+ssid1 = 'BT-89CP3S'
+ssid = "RET - IOT"
+password1 = '7mdJXHmCRyAQ3J'
+password = "UwolnicMajonez!"
 LED = Pin('LED', Pin.OUT)
 
 state = False
 
 last = time.ticks_ms()
+
 
 def wordsmith(word):
     word = list(word)
@@ -19,8 +22,10 @@ def wordsmith(word):
         yield x
         word.append(x)
 
+
 pink_btn = Pin(4, Pin.IN, Pin.PULL_UP)
 program_pos = 0
+
 
 def button_handler(pin):
     global pink_btn, last
@@ -32,7 +37,9 @@ def button_handler(pin):
             last = time.ticks_ms()
             print(program_pos)
 
+
 pink_btn.irq(trigger=machine.Pin.IRQ_RISING, handler=button_handler)
+
 
 # HTML template for the webpage
 def webpage(state):
@@ -59,17 +66,18 @@ def webpage(state):
         """
     return str(html)
 
+
 class Server:
     def __init__(self):
         self.wlan = network.WLAN(network.STA_IF)
         network.hostname("HelloHarriet")
         self.job = "do"
         self.led = LED
-    
+
     def connect(self):
         self.wlan.active(True)
         self.wlan.connect(ssid, password)
-        
+
         # Wait for Wi-Fi connection
         connection_timeout = 10
         while connection_timeout > 0:
@@ -100,10 +108,6 @@ class Server:
         # Main loop to listen for connections
         while True:
             try:
-                if state:
-                    self.led.value(1)
-                else:
-                    self.led.value(0)
                 conn, addr = s.accept()
                 print('Got a connection from', addr)
 
@@ -130,6 +134,10 @@ class Server:
 
                 # Generate HTML response
                 response = webpage(state)
+                if state:
+                    self.led.value(1)
+                else:
+                    self.led.value(0)
 
                 # Send the HTTP response and close the connection
                 conn.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
@@ -139,11 +147,15 @@ class Server:
             except OSError as e:
                 conn.close()
 
+
 word = wordsmith("Harriet2021")
+
+
 async def do_display(iterable):
     while True:
         print(next(word))
         await uasyncio.sleep_ms(5)
+
 
 async def blinkey():
     while True:
@@ -152,13 +164,15 @@ async def blinkey():
         LED.value(0)
         await uasyncio.sleep_ms(150)
 
+
 async def mainish():
     uasyncio.create_task(do_display(word))
     uasyncio.create_task(blinkey())
     await uasyncio.sleep(100)
-    
+
+
 if __name__ == "__main__":
     test_server = Server()
     test_server.connect()
-    uasyncio.run(mainish())
+#     uasyncio.run(mainish())
     test_server.listen()
