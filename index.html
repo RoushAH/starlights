@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Starlights!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 50px;
+        }
+        .color-preview {
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+            border: 1px solid #000;
+        }
+        .inputs {
+            margin: 20px;
+        }
+        .inputs input {
+            width: 40px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Harriet's Starlight Server</h1>
+    <h2>Preset Programs</h2>
+    <form action="./twinkle_rainbow">
+        <input type="submit" value="Twinkling Rainbow" />
+    </form>
+    <br>
+    <form action="./roll_rainbow">
+        <input type="submit" value="Rolling Rainbow" />
+    </form>
+    <br>
+    <form action="./sunrise">
+        <input type="submit" value="Sunrise" />
+    </form>
+    <br>
+    <form action="./demo">
+        <input type="submit" value="Demo" />
+    </form>
+    <br>
+    <h2>Colour Picker</h2>
+    <div class="color-preview" id="colorPreview"></div>
+
+    <div class="inputs">
+        <table>
+            <tr>
+            <td><label for="r">R:</label></td>
+            <td><input type="number" id="r" min="0" max="255" value="0"></td>
+            </tr><tr>
+            <td><label for="g">G:</label></td>
+            <td><input type="number" id="g" min="0" max="255" value="0"></td>
+            </tr><tr>
+            <td><label for="b">B:</label></td>
+            <td><input type="number" id="b" min="0" max="255" value="0"></td>
+            </tr>
+        </table>
+    </div>
+
+    <button id="submitButton">Submit</button>
+    <br>
+    <form action="./off">
+        <input type="submit" value="Turn Off" />
+    </form>
+
+
+<script>
+    const rInput = document.getElementById('r');
+    const gInput = document.getElementById('g');
+    const bInput = document.getElementById('b');
+    const colorPreview = document.getElementById('colorPreview');
+    const submitButton = document.getElementById('submitButton');
+
+    function updateColorPreview() {
+        const r = rInput.value;
+        const g = gInput.value;
+        const b = bInput.value;
+        const rgbColor = `rgb(${r}, ${g}, ${b})`;
+        colorPreview.style.backgroundColor = rgbColor;
+    }
+
+    rInput.addEventListener('input', updateColorPreview);
+    gInput.addEventListener('input', updateColorPreview);
+    bInput.addEventListener('input', updateColorPreview);
+
+    submitButton.addEventListener('click', () => {
+        const r = rInput.value;
+        const g = gInput.value;
+        const b = bInput.value;
+        const url = `./colour=${r},${g},${b}`;
+        window.location.href = url;
+    });
+
+    // Initialize the color preview on page load
+    updateColorPreview();
+</script>
+</body>
+</html>

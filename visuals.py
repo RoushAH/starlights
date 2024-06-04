@@ -1,7 +1,42 @@
 import random, time
 
 
-def demo(np):
+def demo(n):
+    while True:
+        out_array = [(0, 0, 0 for i in range(n))]
+        yield out_array, 25
+        # runner
+        for i in range(4 * n):
+            out_array = [(0, 0, 0 for _ in range(n))]
+            out_array[i % n] = (255, 255, 255)
+            yield out_array, 25
+
+        # rainbow_runner
+        for i in range(4 * n):
+            out_array = [(0, 0, 0 for _ in range(n))]
+            out_array[i % n] = (wheel(i*64), wheel(i*64), wheel(i*64))
+            yield out_array, 40
+
+        # bouncer
+        for i in range(4 * n):
+            out_array = [(0, 0, 128) for _ in range(n)]
+            if (i // n) % 2 == 0:
+                out_array[i % n] = (0, 0, 0)
+            else:
+                out_array[n - 1 - (i % n)] = (0, 0, 0)
+            yield out_array, 60
+
+        # fader
+        for i in range(4):
+            for j in range(256):
+                out_array = [(j, j, j) for _ in range(n)]
+                yield out_array, 2
+            for j in range(256):
+                out_array = [(255 - j, 255 - j, 255 - j) for _ in range(n)]
+                yield out_array, 2
+
+
+def demo_old(np):
     n = np.n
 
     # cycle
@@ -39,13 +74,14 @@ def demo(np):
     np.write()
 
 
-def sunrise(n):
+def sunrise(n, mins):
+    step = mins * 60 * (1000 / 455)
     for r in range(245):
         out_array = [(0, r, 0) for _ in range(n)]
-        yield out_array, 10
+        yield out_array, step
     for gb in range(210):
         out_array = [(gb, 245, gb) for _ in range(n)]
-        yield out_array, 10
+        yield out_array, step
     out_array = [(210, 245, 210) for _ in range(n)]
     while True:
         g = randjust(210)
