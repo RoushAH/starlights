@@ -2,7 +2,7 @@ import neopixel
 import machine
 import time
 import random
-
+import network
 import os
 import uasyncio
 from phew import server, connect_to_wifi
@@ -21,6 +21,7 @@ def pix_write(array, neopixels):
         neopixels[i] = array[i]
     neopixels.write()
 
+
 def limit(val):
     if val > 255:
         return 255
@@ -38,6 +39,7 @@ with open("index.html", "r") as f:
         print("No log file present")
 
 np = neopixel.NeoPixel(machine.Pin(16), 66)
+# option1
 button_queue = []
 
 this_show = visuals.living_random(np.n, (20, 127, 15))
@@ -47,18 +49,22 @@ button_queue.append(this_show)
 this_show = visuals.living_random(np.n, (220, 227, 215))
 button_queue.append(this_show)
 
+# option 2
+# button_queue = [
+#     visuals.living_random(np.n, (20, 127, 15)),
+#     visuals.off(np.n),
+#     visuals.living_random(np.n, (220, 227, 215)),
+# ]
+
 show = button_queue[0]
 
 last = time.ticks_ms()
-
 pink_btn = machine.Pin(4, machine.Pin.IN, machine.Pin.PULL_UP)
 button_pos = 0
 
 
 def button_handler(pin):
-    global pink_btn, last
-    global button_pos
-    global show
+    global pink_btn, last, button_pos, show
 
     if pin is pink_btn:
         if time.ticks_diff(time.ticks_ms(), last) > 500:
@@ -135,5 +141,5 @@ if __name__ == "__main__":
     except OSError:
         print("No log file present")
 
-    time.sleep(10)
+    time.sleep(5)
     uasyncio.run(mainish())

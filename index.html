@@ -1,104 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Starlights!</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Starlights!</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 50px;
+            padding: 20px;
+            background-color: lightpink;
         }
         .color-preview {
             width: 100px;
             height: 100px;
-            margin: 20px;
+            margin: 20px auto;
             border: 1px solid #000;
         }
-        .inputs {
-            margin: 20px;
-        }
         .inputs input {
-            width: 40px;
+            width: 60px;
+        }
+        .form-inline .form-control {
             margin-right: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Harriet's Starlight Server</h1>
-    <h2>Preset Programs</h2>
-    <form action="./twinkle_rainbow">
-        <input type="submit" value="Twinkling Rainbow" />
-    </form>
-    <br>
-    <form action="./roll_rainbow">
-        <input type="submit" value="Rolling Rainbow" />
-    </form>
-    <br>
-    <form action="./sunrise">
-        <input type="submit" value="Sunrise" />
-    </form>
-    <br>
-    <form action="./demo">
-        <input type="submit" value="Demo" />
-    </form>
-    <br>
-    <h2>Colour Picker</h2>
-    <div class="color-preview" id="colorPreview"></div>
+    <div class="container text-center">
+        <h1 class="my-4">Harriet's Starlight Server</h1>
 
-    <div class="inputs">
-        <table>
-            <tr>
-            <td><label for="r">R:</label></td>
-            <td><input type="number" id="r" min="0" max="255" value="0"></td>
-            </tr><tr>
-            <td><label for="g">G:</label></td>
-            <td><input type="number" id="g" min="0" max="255" value="0"></td>
-            </tr><tr>
-            <td><label for="b">B:</label></td>
-            <td><input type="number" id="b" min="0" max="255" value="0"></td>
-            </tr>
-        </table>
+        <h2>Preset Programs</h2>
+        <div class="my-3">
+            <form action="./twinkle_rainbow" class="mb-2">
+                <input type="submit" class="btn btn-primary" value="Twinkling Rainbow">
+            </form>
+            <form action="./roll_rainbow" class="mb-2">
+                <input type="submit" class="btn btn-primary" value="Rolling Rainbow">
+            </form>
+            <form action="./sunrise" class="mb-2">
+                <input type="submit" class="btn btn-primary" value="Sunrise">
+            </form>
+            <form action="./demo" class="mb-2">
+                <input type="submit" class="btn btn-primary" value="Demo">
+            </form>
+        </div>
+
+        <h2>Colour Picker</h2>
+        <div class="color-preview" id="colorPreview"></div>
+
+        <div class="inputs">
+            <div class="form-inline justify-content-center">
+                <div class="form-group">
+                    <label for="r">R:</label>
+                    <input type="number" class="form-control" id="r" min="0" max="255" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="g">G:</label>
+                    <input type="number" class="form-control" id="g" min="0" max="255" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="b">B:</label>
+                    <input type="number" class="form-control" id="b" min="0" max="255" value="0">
+                </div>
+            </div>
+        </div>
+
+        <button id="submitButton" class="btn btn-success my-3">Submit</button>
+
+        <form action="./off">
+            <input type="submit" class="btn btn-danger" value="Turn Off">
+        </form>
     </div>
 
-    <button id="submitButton">Submit</button>
-    <br>
-    <form action="./off">
-        <input type="submit" value="Turn Off" />
-    </form>
+    <script>
+        const rInput = document.getElementById('r');
+        const gInput = document.getElementById('g');
+        const bInput = document.getElementById('b');
+        const colorPreview = document.getElementById('colorPreview');
+        const submitButton = document.getElementById('submitButton');
 
+        function updateColorPreview() {
+            const r = rInput.value;
+            const g = gInput.value;
+            const b = bInput.value;
+            const rgbColor = `rgb(${r}, ${g}, ${b})`;
+            colorPreview.style.backgroundColor = rgbColor;
+        }
 
-<script>
-    const rInput = document.getElementById('r');
-    const gInput = document.getElementById('g');
-    const bInput = document.getElementById('b');
-    const colorPreview = document.getElementById('colorPreview');
-    const submitButton = document.getElementById('submitButton');
+        rInput.addEventListener('input', updateColorPreview);
+        gInput.addEventListener('input', updateColorPreview);
+        bInput.addEventListener('input', updateColorPreview);
 
-    function updateColorPreview() {
-        const r = rInput.value;
-        const g = gInput.value;
-        const b = bInput.value;
-        const rgbColor = `rgb(${r}, ${g}, ${b})`;
-        colorPreview.style.backgroundColor = rgbColor;
-    }
+        submitButton.addEventListener('click', () => {
+            const r = rInput.value;
+            const g = gInput.value;
+            const b = bInput.value;
+            const url = `./colour=${r},${g},${b}`;
+            window.location.href = url;
+        });
 
-    rInput.addEventListener('input', updateColorPreview);
-    gInput.addEventListener('input', updateColorPreview);
-    bInput.addEventListener('input', updateColorPreview);
-
-    submitButton.addEventListener('click', () => {
-        const r = rInput.value;
-        const g = gInput.value;
-        const b = bInput.value;
-        const url = `./colour=${r},${g},${b}`;
-        window.location.href = url;
-    });
-
-    // Initialize the color preview on page load
-    updateColorPreview();
-</script>
+        // Initialize the color preview on page load
+        updateColorPreview();
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
