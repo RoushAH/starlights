@@ -9,10 +9,10 @@ from phew import server, connect_to_wifi
 
 import visuals
 
-ssid1 = 'BT-89CP3S'
-ssid = "RET - IOT"
-password1 = '7mdJXHmCRyAQ3J'
-password = "UwolnicMajonez!"
+ssid = 'BT-89CP3S'
+ssid1 = "RET - IOT"
+password = '7mdJXHmCRyAQ3J'
+password1 = "UwolnicMajonez!"
 
 
 def pix_write(array, neopixels):
@@ -39,22 +39,14 @@ with open("index.html", "r") as f:
         print("No log file present")
 
 np = neopixel.NeoPixel(machine.Pin(16), 66)
-# option1
-button_queue = []
 
-this_show = visuals.living_random(np.n, (20, 127, 15))
-button_queue.append(this_show)
-this_show = visuals.off(np.n)
-button_queue.append(this_show)
-this_show = visuals.living_random(np.n, (220, 227, 215))
-button_queue.append(this_show)
-
-# option 2
-# button_queue = [
-#     visuals.living_random(np.n, (20, 127, 15)),
-#     visuals.off(np.n),
-#     visuals.living_random(np.n, (220, 227, 215)),
-# ]
+button_queue = [
+    visuals.living_random(np.n, (15, 170, 15)),
+    visuals.off(np.n),
+    visuals.roll_rainbow(np.n),
+    visuals.twinkle_rainbow(np.n),
+    visuals.living_random(np.n, (185, 22, 45)),
+]
 
 show = button_queue[0]
 
@@ -106,7 +98,7 @@ def command(request, command):
         button_pos = 0
     elif not command.startswith("fav"):
         show = visuals.off(np.n)
-        button_pos = 1
+        button_pos = -1
     return str(html)
 
 

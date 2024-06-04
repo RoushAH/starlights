@@ -3,18 +3,18 @@ import random, time
 
 def demo(n):
     while True:
-        out_array = [(0, 0, 0 for i in range(n))]
+        out_array = [(0, 0, 0) for i in range(n)]
         yield out_array, 25
         # runner
         for i in range(4 * n):
-            out_array = [(0, 0, 0 for _ in range(n))]
+            out_array = [(0, 0, 0) for _ in range(n)]
             out_array[i % n] = (255, 255, 255)
             yield out_array, 25
 
         # rainbow_runner
         for i in range(4 * n):
-            out_array = [(0, 0, 0 for _ in range(n))]
-            out_array[i % n] = (wheel(i*64), wheel(i*64), wheel(i*64))
+            out_array = [(0, 0, 0) for _ in range(n)]
+            out_array[i % n] = wheel(i)
             yield out_array, 40
 
         # bouncer
@@ -75,7 +75,7 @@ def demo_old(np):
 
 
 def sunrise(n, mins):
-    step = mins * 60 * (1000 / 455)
+    step = int(mins * 60 * (1000 / 455))
     for r in range(245):
         out_array = [(0, r, 0) for _ in range(n)]
         yield out_array, step
