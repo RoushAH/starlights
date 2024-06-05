@@ -29,21 +29,22 @@ async def blinkey():
         led.value(0)
         await uasyncio.sleep_ms(150)
 
+async def checkStop():
+    while True:
+        x = input("x to restart, y to stop")
+        if x == "x":
+            loop.run_forever()
+        elif x == "y":
+            loop.stop()
+
 async def mainish():
     global wlan
 #     uasyncio.create_task(do_display(word))
     blink = uasyncio.create_task(blinkey())
-    while True:
-        print(wlan.active())
-        if time.localtime()[5] % 2 == 0:
-            wlan.active(True)
-            print(f"Turning on {time.localtime()[5]}")
-        else:
-            wlan.active(False)
-            print(f"Turning off {time.localtime()[5]}")
-        await uasyncio.sleep_ms(250)
-#     await uasyncio.sleep(2)
+    await uasyncio.sleep(1)
+#     loop.stop()
     print("Hello")
+    uasyncio.create_task(checkStop())
 
 # server.run(host="starlights_server", port=80)
 # time.sleep(10)
@@ -51,4 +52,4 @@ wlan = network.WLAN(network.STA_IF)
 uasyncio.create_task(mainish())
 loop = uasyncio.get_event_loop()
 loop.run_forever()
-uasyncio.run(mainish())
+# uasyncio.run(mainish())
