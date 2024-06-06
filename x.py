@@ -2,10 +2,17 @@ import _thread
 import time
 import uasyncio as asyncio
 from machine import Pin
+import os
+from phew import server, connect_to_wifi
 
 # Global variables to control server and message
 server_running = False
 message_to_blink = "HELLO WORLD"
+
+ssid1 = 'BT-89CP3S'
+ssid = "RET - IOT"
+password1 = '7mdJXHmCRyAQ3J'
+password = "UwolnicMajonez!"
 
 # LED pin
 led = Pin("LED", Pin.OUT)
@@ -22,13 +29,51 @@ MORSE_CODE_DICT = {
     '0': '-----'
 }
 
+html = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Form</title>
+</head>
+<body>
+    <form action="" method="get" onsubmit="this.action='./' + document.getElementById('userInput').value">
+        <label for="userInput">Enter some text:</label>
+        <input type="text" id="userInput" name="userInput" required>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+'''
+
+
+@server.route("/", methods=["GET"])
+def home(request):
+    return str(html)
+
+
+@server.route("/<command>", methods=["GET"])
+def command(request, command):
+    global message_to_blink
+    os.remove("log.txt")
+    if not command.startswith("fav"):
+        message_to_blink = command
+        print(f"Going to blink {message_to_blink}")
+    return str(html)
+
+
+@server.catchall()
+def catchall(request):
+    return "Page not found", 404
+
 async def server_task():
     global message_to_blink
-    while server_running:
-        print("Server is running...")
+    ip = connect_to_wifi(ssid, password)
+#     while server_running:
+#         print("Server is running...")
         # Simulate receiving a new message
-        message_to_blink = "WORLD HELLO"
-        await asyncio.sleep(10)  # Simulate server work by sleeping for 10 seconds
+#         message_to_blink = "WORLD HELLO"
+    server.run()
+#         await asyncio.sleep(10)  # Simulate server work by sleeping for 10 seconds
 
 def start_event_loop():
     loop = asyncio.new_event_loop()
@@ -49,6 +94,7 @@ def control_server(start):
         loop.stop()
 
 def blink_morse_code(message):
+    print(message)
     for char in message:
         if char in MORSE_CODE_DICT:
             code = MORSE_CODE_DICT[char]
