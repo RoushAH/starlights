@@ -38,13 +38,13 @@ cert = x509.CertificateBuilder().subject_name(
 ).sign(key, hashes.SHA256())
 
 # Write our key to disk for later use
-with open("key.pem", "wb") as f:
+with open("key.der", "wb") as f:
     f.write(key.private_bytes(
-        encoding=serialization.Encoding.PEM,
+        encoding=serialization.Encoding.DER,
         format=serialization.PrivateFormat.TraditionalOpenSSL,
         encryption_algorithm=serialization.NoEncryption(),
     ))
 
 # Write our certificate to disk for later use
-with open("cert.pem", "wb") as f:
-    f.write(cert.public_bytes(serialization.Encoding.PEM))
+with open("cert.der", "wb") as f:
+    f.write(cert.public_bytes(serialization.Encoding.DER))

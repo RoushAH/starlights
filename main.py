@@ -79,15 +79,21 @@ def index(request):
 
 @server.route("/manifest.json", methods=["GET"])
 def manifest(request):
+    return server.serve_file("manifest.json")
     with open("manifest.json", "r") as f:
         return f.read()
+
+
+@server.route("/service-worker.js", methods=["GET"])
+def manifest(request):
+    return server.serve_file("service-worker.js")
 
 
 @server.route("/Appicons/<file>", methods=["GET"])
 def serveIcon(request, file=None):
     print(f"/Appicons/{file}")
     if file is not None:
-        return FileResponse(f"./Appicons/{file}")
+        return server.serve_file(f"./Appicons/{file}")
 
 
 @server.route("/<command>", methods=["GET"])

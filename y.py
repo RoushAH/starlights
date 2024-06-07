@@ -1,30 +1,22 @@
 import network
-import time
 import socket
-import machine
-import ssl
-
-# Replace these with your actual network credentials
-
-SSID = "RET - IOT"
-PASSWORD = "UwolnicMajonez!"
-HOSTNAME = 'your_hostname'
-
-# Initialize Wi-Fi
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
+import time
+import ussl as ssl
 
 # Connect to the Wi-Fi network
-wlan.connect(SSID, PASSWORD)
+ssid = "RET - IOT"
+password = "UwolnicMajonez!"
 
-# Wait for connection
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect(ssid, password)
+
+# Wait for the connection to complete
 while not wlan.isconnected():
     print('Connecting to network...')
     time.sleep(1)
 
-# Print network details
-print('Connected to network')
-print('IP address:', wlan.ifconfig()[0])
+print('Network connected:', wlan.ifconfig())
 
 # Define the HTML response
 html = """HTTP/1.1 200 OK
@@ -44,22 +36,39 @@ Content-Type: text/html
 # Create a socket and listen for connections
 addr = socket.getaddrinfo('0.0.0.0', 443)[0][-1]
 s = socket.socket()
-# s = ssl.wrap_socket(s)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind(addr)
 s.listen(5)
 print('Listening on', addr)
-t = ssl.wrap_socket(s)
+
+# Load SSL certificates
+cert_path = "/cert.der"  # Ensure this matches the upload path
+key_path = "/key.der"    # Ensure this matches the upload path
+with open(key_path, mode="rb") as k:
+    key = k.read()
+with open(cert_path, mode="rb") as c:
+    cert = c.read()
+
+# Wrap socket with SSL
+s = ssl.wrap_socket(s, cert=cert, key=key)
 
 # Function to handle each connection
 def handle_connection(conn):
-    request = conn.recv(1024)
-    print('Request:')
-    print(request)
-    conn.sendall(html)
-    conn.close()
+    try:
+        request = conn.recv(1024)
+        print('Request:')
+        print(request)
+        conn.send(html)
+    except Exception as e:
+        print('Connection error:', e)
+    finally:
+        conn.close()
 
 # Main loop to accept and handle connections
 while True:
-    conn, addr = t.accept()
-    print('Connection from', addr)
-    handle_connection(conn)
+    try:
+        conn, addr = s.accept()
+        print('Connection from', addr)
+        handle_connection(conn)
+    except Exception as e:
+        print('Accept error:', e)
