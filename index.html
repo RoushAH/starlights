@@ -24,6 +24,8 @@
             margin-right: 10px;
         }
     </style>
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#FFB6C1">
 </head>
 <body>
     <div class="container text-center">
@@ -73,6 +75,18 @@
     </div>
 
     <script>
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/static/service-worker.js').then(function (registration) {
+                    // Registration was successful
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function (err) {
+                    // registration failed :(
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
         const rInput = document.getElementById('r');
         const gInput = document.getElementById('g');
         const bInput = document.getElementById('b');

@@ -72,6 +72,23 @@ pink_btn.irq(trigger=machine.Pin.IRQ_RISING, handler=button_handler)
 def home(request):
     return str(html)
 
+@server.route("/index.html", methods=["GET"])
+def index(request):
+    return str(html)
+
+
+@server.route("/manifest.json", methods=["GET"])
+def manifest(request):
+    with open("manifest.json", "r") as f:
+        return f.read()
+
+
+@server.route("/Appicons/<file>", methods=["GET"])
+def serveIcon(request, file=None):
+    print(f"/Appicons/{file}")
+    if file is not None:
+        return FileResponse(f"./Appicons/{file}")
+
 
 @server.route("/<command>", methods=["GET"])
 def command(request, command):

@@ -1,0 +1,23 @@
+{
+  "name": "Starlight Controls",
+  "short_name": "Starlight",
+  "description": "Control the Starlight display in pumpkin's room.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FFB6C1",
+  "icons": [
+    {
+      "src": "/Appicons/appstore.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Appicons/playstore.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
