@@ -1,9 +1,10 @@
-import random, time
+import random
+import time
 
 
 def demo(n):
     while True:
-        out_array = [(0, 0, 0) for i in range(n)]
+        out_array = [(0, 0, 0) for _ in range(n)]
         yield out_array, 25
         # runner
         for i in range(4 * n):
@@ -117,7 +118,7 @@ def wheel(pos):
         g = 0
         r = int(pos * 3)
         b = int(255 - pos * 3)
-    return (g, r, b)
+    return g, r, b
 
 
 def twinkle_rainbow(n):
