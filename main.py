@@ -1,8 +1,6 @@
 import neopixel
 import machine
 import time
-import random
-import network
 import os
 import uasyncio
 from phew import server, connect_to_wifi
@@ -77,7 +75,7 @@ def home(request):
 
 
 @server.route("/<command>", methods=["GET"])
-def command(request, command):
+def behave(request, command):
     global show, button_pos
     os.remove("log.txt")
     if command == "twinkle_rainbow":
