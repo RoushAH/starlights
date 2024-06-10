@@ -8,8 +8,8 @@ from phew import server, connect_to_wifi
 from battery import batteryPack
 import visuals
 
-ssid = 'RET - IOT'
-password = 'UwolnicMajonez!'
+ssid = 'xxxxxx'
+password = 'xxxxxxxxx!'
 
 
 def pix_write(array, neopixels):
