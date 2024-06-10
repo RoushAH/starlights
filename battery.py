@@ -25,3 +25,11 @@ class batteryPack():
         if percent == 0:
             return '<i class="fa fa-battery-0 flash" style="color:red"></i>'
         return f'<i class="fa fa-battery-{percent}"></i>'
+
+
+if __name__ == '__main__':
+    disbat = batteryPack()
+    print(disbat.view_battery())
+    print(disbat.full_battery)
+    print(disbat.empty_battery)
+    print(disbat.read_battery())
