@@ -8,8 +8,8 @@ from phew import server, connect_to_wifi
 from battery import batteryPack
 import visuals
 
-ssid1 = 'BT-89CP3S'
-password1 = '7mdJXHmCRyAQ3J'
+ssid = 'BT-89CP3S'
+password = '7mdJXHmCRyAQ3J'
 
 
 def pix_write(array, neopixels):
@@ -47,12 +47,12 @@ button_queue = [
     visuals.living_random(np.n, (185, 22, 45)),
 ]
 
-show = button_queue[0]
+
 
 last = time.ticks_ms()
 pink_btn = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
 button_pos = 0
-
+show = button_queue[button_pos]
 
 def button_handler(pin):
     global pink_btn, last, button_pos, show
