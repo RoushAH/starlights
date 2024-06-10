@@ -9,9 +9,7 @@ from battery import batteryPack
 import visuals
 
 ssid1 = 'BT-89CP3S'
-ssid = "RET - IOT"
 password1 = '7mdJXHmCRyAQ3J'
-password = "UwolnicMajonez!"
 
 
 def pix_write(array, neopixels):
