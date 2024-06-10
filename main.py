@@ -7,6 +7,7 @@ import os
 import uasyncio
 from phew import server, connect_to_wifi
 
+from battery import batteryPack
 import visuals
 
 ssid1 = 'BT-89CP3S'
@@ -37,8 +38,10 @@ with open("index.html", "r") as f:
         os.remove("log.txt")
     except OSError:
         print("No log file present")
+BATTERY_TARGET = "{{INSERT_BATTERY_HERE}}"
 
 np = neopixel.NeoPixel(machine.Pin(16), 66)
+battery_pack = batteryPack()
 
 button_queue = [
     visuals.living_random(np.n, (15, 170, 15)),
@@ -51,7 +54,7 @@ button_queue = [
 show = button_queue[0]
 
 last = time.ticks_ms()
-pink_btn = machine.Pin(4, machine.Pin.IN, machine.Pin.PULL_UP)
+pink_btn = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
 button_pos = 0
 
 
@@ -70,7 +73,7 @@ pink_btn.irq(trigger=machine.Pin.IRQ_RISING, handler=button_handler)
 
 @server.route("/", methods=["GET"])
 def home(request):
-    return str(html)
+    return str(html).replace(BATTERY_TARGET, battery_pack.view_battery())
 
 
 @server.route("/<command>", methods=["GET"])
@@ -99,7 +102,7 @@ def command(request, command):
     elif not command.startswith("fav"):
         show = visuals.off(np.n)
         button_pos = -1
-    return str(html)
+    return str(html).replace(BATTERY_TARGET, battery_pack.view_battery())
 
 
 @server.catchall()
