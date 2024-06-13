@@ -20,6 +20,7 @@ class batteryPack():
         percent //= 20
         if percent < 0:
             percent = 0
+            return ''
         if percent > 4:
             percent = 4
         if percent == 0:
