@@ -38,6 +38,7 @@ BATTERY_TARGET = "{{INSERT_BATTERY_HERE}}"
 
 np = neopixel.NeoPixel(machine.Pin(16), 66)
 battery_pack = batteryPack()
+empty_colour_array = [(0, 0, 0) for _ in range(np.n)]
 
 button_queue = [
     visuals.living_random(np.n, (15, 170, 15)),
@@ -111,9 +112,20 @@ async def serve():
 
 
 async def blinky():
+    blank = False 
     while True:
         arr, ms = next(show)
-        pix_write(arr, np)
+        if arr is None and not blank:
+            arr = empty_colour_array
+            pix_write(arr, np)
+            print(arr)
+            blank = True
+        elif arr is None:
+            pass
+        else:
+            pix_write(arr, np)
+            print(arr)
+            blank = False
         await uasyncio.sleep_ms(ms)
 
 
