@@ -157,7 +157,7 @@ def randjust(colour):
 def off(n):
     colour_array = [(0, 0, 0) for _ in range(n)]
     while True:
-        yield colour_array, 500
+        yield None, 500
 
 
 def living_random(n, colour):
