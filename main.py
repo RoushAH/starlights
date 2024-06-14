@@ -76,7 +76,10 @@ def home(request):
 @server.route("/<command>", methods=["GET"])
 def behave(request, command):
     global show, button_pos
-    os.remove("log.txt")
+    try:
+        os.remove("log.txt")
+    except OSError:
+        print("No log file present")
     if command == "twinkle_rainbow":
         show = visuals.twinkle_rainbow(np.n)
         button_pos = 0
@@ -108,6 +111,10 @@ def catchall(request):
 
 
 async def serve():
+    ip = connect_to_wifi(ssid, password)
+
+    print(f"IP address {ip}")
+    time.sleep(5)
     server.run()
 
 
@@ -136,13 +143,9 @@ async def mainish():
 
 
 if __name__ == "__main__":
-    ip = connect_to_wifi(ssid, password)
-
-    print(ip)
     try:
         os.remove("log.txt")
     except OSError:
         print("No log file present")
 
-    time.sleep(5)
     uasyncio.run(mainish())
