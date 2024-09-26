@@ -56,10 +56,11 @@ def button_handler(pin):
     global pink_btn, last, button_pos, show
 
     if pin is pink_btn:
-        if time.ticks_diff(time.ticks_ms(), last) > 500:
+        if time.ticks_diff(time.ticks_ms(), last) > 750:
             button_pos += 1
+            button_pos %= len(button_queue)
             last = time.ticks_ms()
-            show = button_queue[button_pos % len(button_queue)]
+            show = button_queue[button_pos]
 
 
 pink_btn.irq(trigger=machine.Pin.IRQ_RISING, handler=button_handler)
@@ -83,9 +84,9 @@ def behave(request, command):
     elif command == "sunrise":
         show = visuals.sunrise(np.n, 3)
         button_pos = 0
-    elif command == "fade_in_last":
-        show = visuals.fade_in(show, 3)
-        button_pos = 0
+    elif command == "fade_in":
+        show = visuals.fade_in(visuals.twinkle_rainbow(np.n), 3)
+        button_pos = 3
     elif command == "fade_out":
         show = visuals.fade_out(show, 3)
         button_pos = -1
