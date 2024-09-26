@@ -155,7 +155,6 @@ def randjust(colour):
 
 
 def off(n):
-    colour_array = [(0, 0, 0) for _ in range(n)]
     while True:
         yield None, 500
 
@@ -179,26 +178,27 @@ def living_random(n, colour):
         yield colour_array, 30
 
 
-
 def sunrise_filter(grb, num):
     # Tries to simulate a sunrise by first showing reds, then fading in greens and blues
+    # UNTESTED!!! with pxls
     # Based on 500 `brightsteps`
     rgb = [grb[1], grb[0], grb[2]]
     if num < 200:
         # red only
-        rgb = [min(num,rgb[1]), 0, 0]
+        rgb = [min(num, rgb[1]), 0, 0]
     elif num < 350:
         # finish red, fade in green
-        rgb = [min(num,rgb[0]), min(num-200,rgb[1]), 0]
+        rgb = [min(num, rgb[0]), min(num - 200, rgb[1]), 0]
     else:
-        #finish green, bring blue in quick
-        blue_min = int((num-350)/150*255)
-        rgb = [min(num,rgb[0]), min(num-200,rgb[1]), min(blue_min, rgb[2])]
-    return (rgb[1],rgb[0],rgb[2])
+        # finish green, bring blue in quick
+        blue_min = int((num - 350) / 150 * 255)
+        rgb = [min(num, rgb[0]), min(num - 200, rgb[1]), min(blue_min, rgb[2])]
+    return rgb[1], rgb[0], rgb[2]
 
 
 def fade_in(gen, mins):
     # Use a provided generator and fade in to its behaviour
+    # UNTESTED!!!
     i = 1
     # calculate `brightstep` length in millis, set current timer to 0
     brightstep = mins * 60 * 2
@@ -211,7 +211,28 @@ def fade_in(gen, mins):
         # compute current time and check to see if we've ticked a brightstep
         t += millis
         if t > brightstep * i:
-            i+= 1
+            i += 1
         yield news, millis
     while True:
         yield next(gen)
+
+
+def fade_out(gen, mins):
+    # Use a provided generator and fade out from its behaviour
+    # UNTESTED!!!
+    i = 0
+    # calculate `brightstep` length in millis, set current timer to 0
+    brightstep = mins * 60 * 2
+    t = 0
+    while i < 500:
+        vals, millis = next(gen)
+        news = []
+        for val in vals:
+            news.append(sunrise_filter(val, 500-i))
+        # compute current time and check to see if we've ticked a brightstep
+        t += millis
+        if t > brightstep * i:
+            i += 1
+        yield news, millis
+    while True:
+        yield None, 500

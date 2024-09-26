@@ -5,11 +5,11 @@ import os
 import uasyncio
 from phew import server, connect_to_wifi
 
-from battery import batteryPack
 import visuals
 
 ssid = 'xxx'
 password = 'xxxxxx!'
+
 
 def pix_write(array, neopixels):
     n = neopixels.n
@@ -33,10 +33,8 @@ with open("index.html", "r") as f:
         os.remove("log.txt")
     except OSError:
         print("No log file present")
-BATTERY_TARGET = "{{INSERT_BATTERY_HERE}}"
 
 np = neopixel.NeoPixel(machine.Pin(28), 66)
-battery_pack = batteryPack()
 empty_colour_array = [(0, 0, 0) for _ in range(np.n)]
 
 button_queue = [
@@ -48,11 +46,11 @@ button_queue = [
 ]
 
 
-
 last = time.ticks_ms()
 pink_btn = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
 button_pos = 0
 show = button_queue[button_pos]
+
 
 def button_handler(pin):
     global pink_btn, last, button_pos, show
@@ -69,7 +67,7 @@ pink_btn.irq(trigger=machine.Pin.IRQ_RISING, handler=button_handler)
 
 @server.route("/", methods=["GET"])
 def home(request):
-    return str(html).replace(BATTERY_TARGET, battery_pack.view_battery())
+    return str(html)
 
 
 @server.route("/<command>", methods=["GET"])
@@ -85,6 +83,12 @@ def behave(request, command):
     elif command == "sunrise":
         show = visuals.sunrise(np.n, 3)
         button_pos = 0
+    elif command == "fade_in_last":
+        show = visuals.fade_in(show, 3)
+        button_pos = 0
+    elif command == "fade_out":
+        show = visuals.fade_out(show, 3)
+        button_pos = -1
     elif command == "demo":
         show = visuals.demo(np.n)
         button_pos = 0
@@ -98,7 +102,7 @@ def behave(request, command):
     elif not command.startswith("fav"):
         show = visuals.off(np.n)
         button_pos = -1
-    return str(html).replace(BATTERY_TARGET, battery_pack.view_battery())
+    return str(html)
 
 
 @server.catchall()
