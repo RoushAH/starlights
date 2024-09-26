@@ -145,8 +145,9 @@ def roll_rainbow(n):
         colour_list.append(x)
 
 
-def randjust(colour):
-    colour += random.randint(-20, 20)
+def randjust(colour, width=20):
+    """ Take a given colour, and return it randomly adjusted """
+    colour += random.randint(-1*width, width)
     if colour < 0:
         return 0
     elif colour > 255:
@@ -155,6 +156,8 @@ def randjust(colour):
 
 
 def off(n):
+    # Return the None array
+    print(f"off for {n} pixels")
     while True:
         yield None, 500
 

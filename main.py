@@ -9,9 +9,11 @@ import visuals
 
 ssid = 'xxx'
 password = 'xxxxxx!'
+BUTTON_RESET_MILLIS = 750
 
 
 def pix_write(array, neopixels):
+    # Take an array and the neopixel object, write to the object
     n = neopixels.n
     for i in range(n):
         neopixels[i] = array[i]
@@ -19,6 +21,7 @@ def pix_write(array, neopixels):
 
 
 def limit(val):
+    # Force a value to be between 0 - 255
     if val > 255:
         return 255
     elif val < 0:
@@ -28,6 +31,7 @@ def limit(val):
 
 
 with open("index.html", "r") as f:
+    # Load the webpage, and nuke the goddamn log
     html = f.read()
     try:
         os.remove("log.txt")
@@ -35,8 +39,9 @@ with open("index.html", "r") as f:
         print("No log file present")
 
 np = neopixel.NeoPixel(machine.Pin(28), 66)
-empty_colour_array = [(0, 0, 0) for _ in range(np.n)]
+empty_colour_array = [(0, 0, 0) for _ in range(np.n)]  # Turn them off
 
+# the order of programs to run when Harriet presses the button
 button_queue = [
     visuals.living_random(np.n, (15, 170, 15)),
     visuals.off(np.n),
@@ -45,7 +50,6 @@ button_queue = [
     visuals.living_random(np.n, (185, 22, 45)),
 ]
 
-
 last = time.ticks_ms()
 pink_btn = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
 button_pos = 0
@@ -53,10 +57,11 @@ show = button_queue[button_pos]
 
 
 def button_handler(pin):
+    # define how to manage the button press
     global pink_btn, last, button_pos, show
 
     if pin is pink_btn:
-        if time.ticks_diff(time.ticks_ms(), last) > 750:
+        if time.ticks_diff(time.ticks_ms(), last) > BUTTON_RESET_MILLIS:
             button_pos += 1
             button_pos %= len(button_queue)
             last = time.ticks_ms()
@@ -68,11 +73,13 @@ pink_btn.irq(trigger=machine.Pin.IRQ_RISING, handler=button_handler)
 
 @server.route("/", methods=["GET"])
 def home(request):
+    """ If home is requested, return home"""
     return str(html)
 
 
 @server.route("/<command>", methods=["GET"])
 def behave(request, command):
+    """ Really bad version of FLASK here, to handle requests to change program """
     global show, button_pos
     os.remove("log.txt")
     if command == "twinkle_rainbow":
@@ -108,6 +115,7 @@ def behave(request, command):
 
 @server.catchall()
 def catchall(request):
+    # 404'd!
     return "Page not found", 404
 
 
@@ -116,10 +124,14 @@ async def serve():
 
 
 async def blinky():
-    blank = False 
+    blank = False
+    # Checks to see if you've blanked out the pixels
     while True:
         arr, ms = next(show)
+        # a show returns an array of colours, written as GRB tuples,
+        # and a number of millis to wait until the next time to pull
         if arr is None and not blank:
+            # blank the pixels
             arr = empty_colour_array
             pix_write(arr, np)
             print(arr)
@@ -127,6 +139,7 @@ async def blinky():
         elif arr is None:
             pass
         else:
+            # Grab the next version of the array from the visuals library, then write it
             pix_write(arr, np)
             print(arr)
             blank = False
@@ -134,6 +147,8 @@ async def blinky():
 
 
 async def mainish():
+    # I don't know why this works, but it does
+    # Create the two tasks, then await sleep. The tasks wil have begun before it awakens
     uasyncio.create_task(blinky())
     uasyncio.create_task(serve())
     await uasyncio.sleep(10)
