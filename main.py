@@ -8,9 +8,8 @@ from phew import server, connect_to_wifi
 from battery import batteryPack
 import visuals
 
-ssid = 'xxxxxx'
-password = 'xxxxxxxxx!'
-
+ssid = 'xxx'
+password = 'xxxxxx!'
 
 def pix_write(array, neopixels):
     n = neopixels.n
@@ -36,7 +35,7 @@ with open("index.html", "r") as f:
         print("No log file present")
 BATTERY_TARGET = "{{INSERT_BATTERY_HERE}}"
 
-np = neopixel.NeoPixel(machine.Pin(16), 66)
+np = neopixel.NeoPixel(machine.Pin(28), 66)
 battery_pack = batteryPack()
 empty_colour_array = [(0, 0, 0) for _ in range(np.n)]
 
