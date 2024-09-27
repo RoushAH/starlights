@@ -76,6 +76,7 @@ def demo_old(np):
 
 
 def sunrise(n, mins):
+    """ Sunrise from off through read to white"""
     step = int(mins * 60 * (1000 / 455))
     for r in range(245):
         out_array = [(0, r, 0) for _ in range(n)]
@@ -94,14 +95,15 @@ def sunrise(n, mins):
 
 
 def twinkle_dim(colour):
+    """ Drop a given colour by a certain amount, to approximate a twinkling star"""
     g, r, b = colour
     drop = random.randint(65, 85) / 100
     return int(g * drop), int(r * drop), int(b * drop)
 
 
 def wheel(pos):
-    # Input a value 0 to 255 to get a color value.
-    # The colours are a transition r - g - b - back to r.
+    """ Input a value 0 to 255 to get a color value.
+        The colours are a transition r - g - b - back to r. """
     if pos < 0 or pos > 255:
         r = g = b = 0
     elif pos < 85:
@@ -122,9 +124,8 @@ def wheel(pos):
 
 
 def twinkle_rainbow(n):
-    colour_array = []
-    for i in range(n):
-        colour_array.append(wheel(int(i * 255 / (n * 1.1))))
+    """ Create the rainbow. Then pick a random pixel and dim it"""
+    colour_array = [wheel(int(i * 255 / (n * 1.1))) for i in range(n)]
     yield colour_array, random.randint(60, 120)
     old_pix = 0
     while True:
@@ -136,11 +137,10 @@ def twinkle_rainbow(n):
 
 
 def roll_rainbow(n):
-    colour_list = []
-    for i in range(n):
-        colour_list.append(wheel(int(i * 255 / n)))
+    """ Create the rainbow. Then rotate it about the room """
+    colour_list = [wheel(int(i * 255 / n)) for i in range(n)]
     while True:
-        yield colour_list, 40
+        yield colour_list, 46
         x = colour_list.pop(0)
         colour_list.append(x)
 
@@ -163,13 +163,10 @@ def off(n):
 
 
 def living_random(n, colour):
-    colour_array = []
-    for i in range(n):
-        g, r, b = colour
-        g = randjust(g)
-        r = randjust(r)
-        b = randjust(b)
-        colour_array.append((g, r, b))
+    """ Take in a requested colour and return a full-sized array of random values centred around the target
+        Then each iteration picks one random LED and changes its colour within range """
+    g, r, b = colour
+    colour_array = [(randjust(g),randjust(r),randjust(b)) for _ in range(n)]
     yield colour_array, 30
     while True:
         g, r, b = colour
