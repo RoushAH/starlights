@@ -51,7 +51,7 @@ button_queue = [
 ]
 
 last = time.ticks_ms()
-pink_btn = machine.Pin(15, machine.Pin.IN, machine.Pin.PULL_UP)
+pink_btn = machine.Pin(6, machine.Pin.IN, machine.Pin.PULL_UP)
 button_pos = 0
 show = button_queue[button_pos]
 
