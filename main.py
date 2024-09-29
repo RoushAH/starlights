@@ -38,7 +38,7 @@ with open("index.html", "r") as f:
     except OSError:
         print("No log file present")
 
-np = neopixel.NeoPixel(machine.Pin(28), 66)
+np = neopixel.NeoPixel(machine.Pin(27), 66)
 empty_colour_array = [(0, 0, 0) for _ in range(np.n)]  # Turn them off
 
 # the order of programs to run when Harriet presses the button
@@ -134,14 +134,14 @@ async def blinky():
             # blank the pixels
             arr = empty_colour_array
             pix_write(arr, np)
-            print(arr)
+#             print(arr)
             blank = True
         elif arr is None:
             pass
         else:
             # Grab the next version of the array from the visuals library, then write it
             pix_write(arr, np)
-            print(arr)
+#             print(arr)
             blank = False
         await uasyncio.sleep_ms(ms)
 
