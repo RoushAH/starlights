@@ -185,7 +185,7 @@ def sunrise_filter(grb, num):
     rgb = [grb[1], grb[0], grb[2]]
     if num < 200:
         # red only
-        rgb = [min(num, rgb[1]), 0, 0]
+        rgb = [min(num, rgb[0]), 0, 0]
     elif num < 350:
         # finish red, fade in green
         rgb = [min(num, rgb[0]), min(num - 200, rgb[1]), 0]
