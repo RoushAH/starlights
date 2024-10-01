@@ -1,5 +1,8 @@
+import math
 import random
 import time
+
+from scipy.constants import milli
 
 
 def demo(n):
@@ -147,7 +150,7 @@ def roll_rainbow(n):
 
 def randjust(colour, width=20):
     """ Take a given colour, and return it randomly adjusted """
-    colour += random.randint(-1*width, width)
+    colour += random.randint(-1 * width, width)
     if colour < 0:
         return 0
     elif colour > 255:
@@ -166,7 +169,7 @@ def living_random(n, colour):
     """ Take in a requested colour and return a full-sized array of random values centred around the target
         Then each iteration picks one random LED and changes its colour within range """
     g, r, b = colour
-    colour_array = [(randjust(g),randjust(r),randjust(b)) for _ in range(n)]
+    colour_array = [(randjust(g), randjust(r), randjust(b)) for _ in range(n)]
     yield colour_array, 30
     while True:
         g, r, b = colour
@@ -203,6 +206,13 @@ def fade_in(gen, mins):
     # calculate `brightstep` length in millis, set current timer to 0
     brightstep = mins * 60 * 2
     t = 0
+    for i in range(80):
+        vals, millis = next(gen)
+        news = []
+        for val in vals:
+            news.append(sunrise_filter(val, i))
+        yield news, brightstep
+        t += brightstep
     while i < 500:
         vals, millis = next(gen)
         news = []
@@ -224,15 +234,47 @@ def fade_out(gen, mins):
     # calculate `brightstep` length in millis, set current timer to 0
     brightstep = mins * 60 * 2
     t = 0
-    while i < 500:
+    while i < 420:
         vals, millis = next(gen)
         news = []
         for val in vals:
-            news.append(sunrise_filter(val, 500-i))
+            news.append(sunrise_filter(val, 500 - i))
         # compute current time and check to see if we've ticked a brightstep
         t += millis
         if t > brightstep * i:
             i += 1
         yield news, millis
+    while i < 500:
+        vals, millis = next(gen)
+        news = []
+        for val in vals:
+            news.append(sunrise_filter(val, 500 - i))
+        yield news, brightstep
     while True:
         yield None, 500
+
+
+def scale_colours(gen, scale, old_scale=3):
+    """ Scale the colour array based on a scale of 3rds
+        Scale = 3, full volume; scale = 2, 2/3; etc.
+        UNTESTED under fire
+        Totally not implemented at all"""
+    if scale == old_scale:
+        while True:
+            yield next(gen)
+    # get rid of roundoff error
+    scale, old_scale = scale * 10, old_scale * 10
+    array, millis = next(gen)
+    # change by 0.1 per 250 millis
+    change_step = 250
+    change_val = 1 if scale > old_scale else -1
+    t = 0
+    while old_scale != scale:
+        scaled_arr = [tuple([int(v * old_scale / 30) for v in pix]) for pix in array]
+        yield scaled_arr, millis
+        t += millis
+        if t >= change_step:
+            t -= change_step
+            old_scale += change_val
+    while True:
+        yield next(gen)

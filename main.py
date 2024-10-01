@@ -10,6 +10,7 @@ import visuals
 ssid = 'xxx'
 password = 'xxxxxx!'
 BUTTON_RESET_MILLIS = 750
+starting_light_level = 3
 
 
 def pix_write(array, neopixels):
