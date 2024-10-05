@@ -2,8 +2,6 @@ import math
 import random
 import time
 
-from scipy.constants import milli
-
 
 def demo(n):
     while True:
@@ -250,6 +248,7 @@ def fade_out(gen, mins):
         for val in vals:
             news.append(sunrise_filter(val, 500 - i))
         yield news, brightstep
+        i += 1
     while True:
         yield None, 500
 
