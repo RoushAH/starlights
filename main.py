@@ -4,6 +4,7 @@ import time
 import os
 import uasyncio
 from phew import server, connect_to_wifi
+import urequests
 
 import visuals
 
@@ -135,14 +136,14 @@ async def blinky():
             # blank the pixels
             arr = empty_colour_array
             pix_write(arr, np)
-#             print(arr)
+            #             print(arr)
             blank = True
         elif arr is None:
             pass
         else:
             # Grab the next version of the array from the visuals library, then write it
             pix_write(arr, np)
-#             print(arr)
+            #             print(arr)
             blank = False
         await uasyncio.sleep_ms(ms)
 
