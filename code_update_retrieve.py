@@ -1,11 +1,12 @@
 import urequests
 import network
 import os
+import secrets
 
 
 def do_connect(wifi_num):
-    wifis = [("RET - IOT", "UwolnicMajonez!"), ("pretty-fly-for-a-wifi", "ExtrAT3st"), ("Bapunzel", "SayUpBig")]
     network_choice = wifi_num
+    wifis = secrets.wifis
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     wlan.connect(*wifis[network_choice])
