@@ -16,9 +16,12 @@ starting_light_level = 3
 
 def pix_write(array, neopixels):
     # Take an array and the neopixel object, write to the object
-    n = neopixels.n
-    for i in range(n):
-        neopixels[i] = array[i]
+    if array is None:
+        neopixels.fill((0, 0, 0))
+    else:
+        n = neopixels.n
+        for i in range(n):
+            neopixels[i] = array[i]
     neopixels.write()
 
 
@@ -134,7 +137,7 @@ async def blinky():
         # and a number of millis to wait until the next time to pull
         if arr is None and not blank:
             # blank the pixels
-            arr = empty_colour_array
+            # arr = empty_colour_array
             pix_write(arr, np)
             #             print(arr)
             blank = True
