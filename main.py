@@ -5,11 +5,12 @@ import os
 import uasyncio
 from phew import server, connect_to_wifi
 import urequests
+import secrets
 
 import visuals
 
-ssid = 'xxx'
-password = 'xxxxxx!'
+network_number = 1
+ssid, password = secrets.wifis[network_number]
 BUTTON_RESET_MILLIS = 750
 starting_light_level = 3
 
