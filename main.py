@@ -79,6 +79,23 @@ def home(request):
     """ If home is requested, return home"""
     return str(html)
 
+@server.route("/update", methods=["GET"])
+def update(request):
+    """ Do the updates from Github repo"""
+    with open("manifest.txt", "r") as f:
+        manifest = f.read()
+    manifest = manifest.split("\n")
+    target = "https://raw.githubusercontent.com/RoushAH/starlights/main/"
+    for file in manifest:
+        result = urequests.get(target + file)
+        print(f"GREAT SUCCESS {file}") if result.status_code == 200 else print(f"Whomp, whomp, {file}")
+        if result.status_code == 200:
+            with open(file, "w") as f:
+                f.write(result.text)
+
+    return str(html)
+
+
 
 @server.route("/<command>", methods=["GET"])
 def behave(request, command):
