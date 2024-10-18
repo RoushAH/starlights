@@ -9,7 +9,7 @@ import secrets
 
 import visuals
 
-network_number = 1
+network_number = 0
 ssid, password = secrets.wifis[network_number]
 BUTTON_RESET_MILLIS = 750
 starting_light_level = 3
