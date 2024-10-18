@@ -92,7 +92,8 @@ def update(request):
         if result.status_code == 200:
             with open(file, "w") as f:
                 f.write(result.text)
-
+    time.sleep(2)
+    machine.reset()
     return str(html)
 
 
